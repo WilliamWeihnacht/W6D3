@@ -1,11 +1,16 @@
 class UsersController < ApplicationController
 
     def index
-        render plain: "I'm in the index action!"
+        render json: User.all
     end
 
     def update
-        
+       user = User.find_by(id: params[:id])
+        if user.update(user_params)
+            redirect_to user_url(params[:id])
+        else
+            render json: user.errors.full_messages, status: :unprocessable_entity
+        end
     end
 
     def show
@@ -19,6 +24,12 @@ class UsersController < ApplicationController
         else
             render json: user.errors.full_messages, status: :unprocessable_entity
         end
+    end
+
+    def destroy
+        user = User.find_by(id: params[:id])
+        user.destroy!
+        render json: user
     end
 
     private
